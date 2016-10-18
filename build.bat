@@ -1,0 +1,1 @@
+C:\Python35\Scripts\pyinstaller.exe learn.py --hidden-import=tkinter --hidden-import=tkinter.filedialog --hidden-import=pkg_resources
