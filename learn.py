@@ -44,6 +44,8 @@ def regression(train_f = 'regression_train.csv', test_f = 'regression_test.csv')
     plt.ylabel('target')
     plt.legend()
 
+    return svr
+
 def classification(train_f = 'classification_train.csv', test_f = 'classification_test.csv'):
     with open(os.path.join(_PATH, train_f)) as train:
         train_t = train.read()
@@ -63,14 +65,14 @@ def classification(train_f = 'classification_train.csv', test_f = 'classificatio
     ts_len = len (test_set_feat)
 
     train_a_feat = np.array(train_set_feat, np.float64).reshape(tr_len, 2)
-    train_a_cls = np.array(train_set_cls, np.float64)
+    train_a_cls = np.array(train_set_cls, np.int64)
     test_a_feat = np.array(test_set_feat, np.float64).reshape(ts_len, 2)
 
     clf = MLPClassifier(**params.class_params)
     svr = clf.fit(train_a_feat, train_a_cls)
 
     pred = svr.predict(test_a_feat)
-    h = 0.2
+    h = 0.02
 
     x_min, x_max = train_a_feat[:, 0].min() - 1, train_a_feat[:, 0].max() + 1
     y_min, y_max = train_a_feat[:, 1].min() - 1, train_a_feat[:, 1].max() + 1
@@ -83,13 +85,21 @@ def classification(train_f = 'classification_train.csv', test_f = 'classificatio
     Z = Z.reshape(xx.shape)
 
     plt.figure()
-    plt.contourf(xx, yy, Z, cmap=plt.cm.Paired)
+    plt.pcolormesh(xx, yy, Z, cmap=plt.cm.Paired)
     plt.axis('off')
 
     # Plot also the training points
-    plt.scatter(train_a_feat[:, 0], train_a_feat[:, 1], c=train_a_cls, cmap=plt.cm.Paired)
+    plt.scatter(train_a_feat[:, 0], train_a_feat[:, 1], c=train_a_cls, cmap=plt.cm.Paired, label='data')
+    plt.legend()
+    
+    return svr
 
 if __name__ == "__main__":
     regression()
-    classification()
+    regression(train_f = 'data.square.train.1000.csv'
+                      ,test_f = 'data.square.test.1000.csv' )
+    regression(train_f = 'data.multimodal.train.1000.csv'
+                      ,test_f = 'data.multimodal.test.1000.csv' )
+    svr2 = classification(train_f = 'data.circles.train.1000.csv'
+                          , test_f = 'data.circles.test.1000.csv')
     plt.show()
